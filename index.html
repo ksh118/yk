@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>자전거 위치 표시 지도</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+    .circle-icon {
+      background: white;
+      border: 2px solid #4CAF50;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .circle-icon img {
+      width: 30px;
+      height: 30px;
+    }
+    .popup-buttons {
+      text-align: center;
+    }
+    .popup-buttons button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([37.719372, 126.732994], 17);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // HTML 기반 아이콘
+    var bikeHtmlIcon = L.divIcon({
+      html: '<div class="circle-icon"><img src="https://cdn-icons-png.flaticon.com/512/2972/2972185.png" alt="Bike"></div>',
+      className: '',
+      iconSize: [60, 60],
+      iconAnchor: [30, 60],
+      popupAnchor: [0, -60]
+    });
+
+    var marker = L.marker([37.719372, 126.732994], {icon: bikeHtmlIcon}).addTo(map);
+
+    // 팝업에 버튼 추가
+    marker.bindPopup('<b>자전거 번호:</b> 555555<br><b>배터리:</b> 52%<br><div class="popup-buttons"><button id="soundButton">소리내기</button><button id="rentButton">대여하기</button></div>');
+
+    // 팝업이 열릴 때 버튼 이벤트 추가
+    marker.on('popupopen', function() {
+      document.getElementById('soundButton').addEventListener('click', function() {
+        alert('소리 재생 중');
+      });
+      document.getElementById('rentButton').addEventListener('click', function() {
+        alert('신호 오류');
+      });
+    });
+
+    // 사용자 현재 위치 표시
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        var userMarker = L.marker([lat, lon]).addTo(map);
+        userMarker.bindPopup("📍 내 위치").openPopup();
+      }, function(error) {
+        console.warn("위치 정보를 가져올 수 없습니다:", error.message);
+      });
+    } else {
+      alert("브라우저에서 위치 정보가 지원되지 않습니다.");
+    }
+  </script>
+</body>
+</html>
