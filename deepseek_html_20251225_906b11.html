@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코뎃(Code-It) - 코드 블로그</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 로그인 모달 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-code"></i> 코뎃에 오신 것을 환영합니다!</h2>
+                <p>게스트로 로그인하여 코드 블로그를 이용해보세요.</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="nickname"><i class="fas fa-user"></i> 닉네임 입력</label>
+                    <input type="text" id="nickname" placeholder="사용할 닉네임을 입력하세요 (최대 10자)" maxlength="10">
+                    <div class="error-message" id="nicknameError"></div>
+                </div>
+                <button id="guestLoginBtn" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> 게스트 로그인
+                </button>
+                <div class="admin-link">
+                    <a href="#" id="adminLoginLink"><i class="fas fa-lock"></i> 관리자 로그인</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 관리자 로그인 모달 -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-lock"></i> 관리자 로그인</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="adminPassword"><i class="fas fa-key"></i> 비밀번호</label>
+                    <input type="password" id="adminPassword" placeholder="관리자 비밀번호 입력">
+                    <div class="error-message" id="adminError"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button id="adminLoginBtn" class="btn-primary">로그인</button>
+                    <button id="adminCancelBtn" class="btn-secondary">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 블로그 화면 -->
+    <div id="mainContent" class="hidden">
+        <!-- 헤더 -->
+        <header class="blog-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1><i class="fas fa-code"></i> 코뎃</h1>
+                        <p>코드를 나누는 즐거움</p>
+                    </div>
+                    <div class="user-info">
+                        <span id="currentUser">익명</span>
+                        <button id="logoutBtn" class="btn-small"><i class="fas fa-sign-out-alt"></i> 로그아웃</button>
+                        <a href="admin.html" id="adminPageLink" class="btn-small btn-admin hidden">
+                            <i class="fas fa-cog"></i> 관리자
+                        </a>
+                    </div>
+                </div>
+                <nav class="blog-nav">
+                    <a href="#posts" class="nav-link active"><i class="fas fa-list"></i> 게시글 목록</a>
+                    <a href="#write" class="nav-link"><i class="fas fa-edit"></i> 글 작성</a>
+                    <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> 소개</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- 게시글 목록 -->
+            <section id="posts" class="section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> 최신 게시글</h2>
+                    <div class="post-count">
+                        총 <span id="totalPosts">0</span>개의 게시글
+                    </div>
+                </div>
+                <div id="postList" class="post-list">
+                    <!-- 게시글이 여기에 동적으로 추가됨 -->
+                </div>
+            </section>
+
+            <!-- 글 작성 -->
+            <section id="write" class="section hidden">
+                <div class="section-header">
+                    <h2><i class="fas fa-edit"></i> 새 글 작성</h2>
+                </div>
+                <form id="postForm" class="post-form">
+                    <div class="form-group">
+                        <label for="postTitle"><i class="fas fa-heading"></i> 제목 *</label>
+                        <input type="text" id="postTitle" placeholder="게시글 제목을 입력하세요" required>
+                        <div class="error-message" id="titleError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postContent"><i class="fas fa-file-alt"></i> 내용 *</label>
+                        <textarea id="postContent" placeholder="게시글 내용을 입력하세요" rows="10" required></textarea>
+                        <div class="error-message" id="contentError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postCode"><i class="fas fa-code"></i> 코드 (선택사항)</label>
+                        <div class="code-header">
+                            <span>코드 편집기</span>
+                            <select id="codeLanguage">
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="html">HTML</option>
+                                <option value="css">CSS</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="plaintext">기타</option>
+                            </select>
+                        </div>
+                        <textarea id="postCode" placeholder="코드를 입력하세요 (선택사항)" rows="15"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i> 게시하기
+                        </button>
+                        <button type="reset" class="btn-secondary">
+                            <i class="fas fa-redo"></i> 초기화
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- 소개 -->
+            <section id="about" class="section hidden">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> 코뎃 소개</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-card">
+                        <h3><i class="fas fa-code"></i> 코뎃이란?</h3>
+                        <p>코뎃(Code-It)은 개발자들을 위한 코드 공유 블로그입니다. 누구나 게스트로 로그인하여 코드를 공유하고 지식을 나눌 수 있습니다.</p>
+                    </div>
+                    <div class="about-card">
+                        <h3><i class="fas fa-feather-alt"></i> 주요 기능</h3>
+                        <ul>
+                            <li>게스트 로그인으로 간편하게 시작</li>
+                            <li>코드 하이라이팅 지원</li>
+                            <li>익명 또는 닉네임으로 글 작성</li>
+                            <li>게시물 관리 기능</li>
+                        </ul>
+                    </div>
+                    <div class="about-card">
+                        <h3><i class="fas fa-user-shield"></i> 관리자 기능</h3>
+                        <p>관리자 비밀번호(1234)로 로그인하여 게시물을 관리할 수 있습니다.</p>
+                        <button id="gotoAdminBtn" class="btn-primary">
+                            <i class="fas fa-cog"></i> 관리자 페이지로 이동
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="blog-footer">
+            <div class="container">
+                <p>© 2023 코뎃(Code-It). 모든 권리 보유.</p>
+                <p>개발자들을 위한 코드 공유 블로그</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
